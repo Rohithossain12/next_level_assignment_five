@@ -5,6 +5,7 @@ import app from "./app";
 
 
 
+
 let server: Server;
 
 
@@ -24,4 +25,11 @@ const startServer = async () => {
 }
 
 
-startServer()
+
+
+(
+    async () => {
+
+        await startServer()
+       
+    })()
