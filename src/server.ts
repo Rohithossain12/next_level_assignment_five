@@ -2,6 +2,7 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import { envVars } from "./app/config/env";
 import app from "./app";
+import { seedSupperAdmin } from "./app/utils/seedSupperAdmin";
 
 
 
@@ -26,10 +27,60 @@ const startServer = async () => {
 
 
 
-
 (
     async () => {
 
         await startServer()
+        await seedSupperAdmin()
        
     })()
+
+
+    process.on("SIGTERM", () => {
+    console.log("SIGTERM signal recieved....server shutting down..");
+
+    if (server) {
+        server.close(() => {
+            process.exit(1)
+        });
+
+    }
+    process.exit(1)
+});
+process.on("SIGINT", () => {
+    console.log("SIGINT signal recieved....server shutting down..");
+
+    if (server) {
+        server.close(() => {
+            process.exit(1)
+        });
+
+    }
+    process.exit(1)
+});
+
+
+process.on("unhandledRejection", (err) => {
+    console.log("Unhandled Rejection Detected....server shutting down..", err);
+
+    if (server) {
+        server.close(() => {
+            process.exit(1)
+        });
+
+    }
+    process.exit(1)
+});
+
+
+process.on("uncaughtException", (err) => {
+    console.log("Uncaught Exception Detected....server shutting down..", err);
+
+    if (server) {
+        server.close(() => {
+            process.exit(1)
+        });
+
+    }
+    process.exit(1)
+});
