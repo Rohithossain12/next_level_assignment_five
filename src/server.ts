@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { envVars } from "./app/config/env";
 import app from "./app";
 import { seedSupperAdmin } from "./app/utils/seedSupperAdmin";
+import { redisConnect } from "./app/config/redis.config";
 
 
 
@@ -29,14 +30,15 @@ const startServer = async () => {
 
 (
     async () => {
-
+        await redisConnect()
         await startServer()
         await seedSupperAdmin()
-       
+
+
     })()
 
 
-    process.on("SIGTERM", () => {
+process.on("SIGTERM", () => {
     console.log("SIGTERM signal recieved....server shutting down..");
 
     if (server) {

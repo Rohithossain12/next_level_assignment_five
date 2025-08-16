@@ -3,13 +3,31 @@ import express, { Request, Response } from "express";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { notFound } from "./app/middlewares/notFound";
 import { router } from "./app/routes";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import passport from "passport";
+import cors from "cors"
+import "./app/config/pasport"
+import { envVars } from "./app/config/env";
 
 
+const app = express();
 
-
-const app = express()
-app.use(express.json())
+app.use(cors({
+    origin: envVars.FRONTEND_URL,
+    credentials: true
+}));
+app.use(cookieParser());
+app.use(express.json());
+app.use(session({
+    secret: envVars.EXPRESS_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use("/", router);
+
 
 
 

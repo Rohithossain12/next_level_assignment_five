@@ -7,8 +7,10 @@ interface EnvConfig {
     PORT: string,
     DB_URL: string,
     NODE_ENV: "development" | "production",
+    FRONTEND_URL: string,
     SUPER_ADMIN_EMAIL: string,
     SUPER_ADMIN_PASSWORD: string,
+    EXPRESS_SESSION_SECRET:string,
     BCRYPT_SALT_ROUND: string,
     JWT_ACCESS_SECRET: string
     JWT_ACCESS_EXPIRES: string
@@ -27,6 +29,14 @@ interface EnvConfig {
         GOOGLE_CALLBACK_URL: string;
     };
 
+    REDIS: {
+
+        REDIS_HOST: string,
+        REDIS_PORT: string,
+        REDIS_USERNAME: string,
+        REDIS_PASSWORD: string,
+    }
+
 
 
 }
@@ -37,8 +47,10 @@ const loadEnvVariables = (): EnvConfig => {
         "PORT",
         "DB_URL",
         "NODE_ENV",
+        "FRONTEND_URL",
         "SUPER_ADMIN_EMAIL",
         "SUPER_ADMIN_PASSWORD",
+        "EXPRESS_SESSION_SECRET",
         "BCRYPT_SALT_ROUND",
         "JWT_ACCESS_EXPIRES",
         "JWT_ACCESS_SECRET",
@@ -52,6 +64,10 @@ const loadEnvVariables = (): EnvConfig => {
         "GOOGLE_CLIENT_SECRET",
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CALLBACK_URL",
+        "REDIS_HOST",
+        "REDIS_PORT",
+        "REDIS_USERNAME",
+        "REDIS_PASSWORD",
 
     ];
 
@@ -65,8 +81,10 @@ const loadEnvVariables = (): EnvConfig => {
         PORT: process.env.PORT as string,
         DB_URL: process.env.DB_URL!,
         NODE_ENV: process.env.NODE_ENV as "development" | "production",
+        FRONTEND_URL: process.env.FRONTEND_URL as string,
         SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
         SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+        EXPRESS_SESSION_SECRET:process.env.EXPRESS_SESSION_SECRET as string,
         BCRYPT_SALT_ROUND: process.env.BCRYPT_SALT_ROUND as string,
         JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET as string,
         JWT_ACCESS_EXPIRES: process.env.JWT_ACCESS_EXPIRES as string,
@@ -83,6 +101,13 @@ const loadEnvVariables = (): EnvConfig => {
             GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
             GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
             GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
+        },
+
+        REDIS: {
+            REDIS_HOST: process.env.REDIS_HOST as string,
+            REDIS_PORT: process.env.REDIS_PORT as string,
+            REDIS_USERNAME: process.env. REDIS_USERNAME as string,
+            REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
         }
 
 
