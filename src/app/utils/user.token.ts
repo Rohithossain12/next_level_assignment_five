@@ -8,7 +8,7 @@ import httpStatus from "http-status-codes";
 
 
 
-export const createUserToken =(user:Partial<IUser>)=>{
+export const createUserToken = (user: Partial<IUser>) => {
 
     const jwtPayload = {
         userId: user._id,
@@ -22,7 +22,7 @@ export const createUserToken =(user:Partial<IUser>)=>{
     const refreshToken = generateToken(jwtPayload, envVars.JWT_REFRESH_SECRET, envVars.JWT_REFRESH_EXPIRES)
 
 
-    return{
+    return {
         accessToken,
         refreshToken
     }
@@ -31,10 +31,8 @@ export const createUserToken =(user:Partial<IUser>)=>{
 
 
 
-
-
-export const createNewAccessTokenWithRefreshToken = async(refreshToken:string) =>{
-const verifiedRefreshToken = verifyToken(refreshToken, envVars.JWT_REFRESH_SECRET) as JwtPayload
+export const createNewAccessTokenWithRefreshToken = async (refreshToken: string) => {
+    const verifiedRefreshToken = verifyToken(refreshToken, envVars.JWT_REFRESH_SECRET) as JwtPayload
 
     const isUserExist = await User.findOne({ email: verifiedRefreshToken.email });
     if (!isUserExist) {
