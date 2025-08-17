@@ -8,6 +8,7 @@ It allows **senders**, **receivers**, and **admins** to manage parcels with **st
 Built with:
 
 - **Node.js & Express.js**
+-  **Typescript**
 - **MongoDB & Mongoose**
 - **JWT Authentication**
 - **Role-based Authorization**
