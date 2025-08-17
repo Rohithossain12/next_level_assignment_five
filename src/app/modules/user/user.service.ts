@@ -40,8 +40,8 @@ const createUser = async (payload: Partial<IUser>, decodedToken?: JwtPayload) =>
 
 // Get all users with pagination, search, filter
 const getAllUsers = async (query: Record<string, string>, decodedToken?: JwtPayload) => {
-    if (decodedToken?.role !== Role.ADMIN) {
-        throw new AppError(httpStatus.FORBIDDEN, "Only admin can access all users");
+    if (![Role.ADMIN, Role.SUPER_ADMIN].includes(decodedToken?.role as Role)) {
+        throw new AppError(httpStatus.FORBIDDEN, "Only admin or super admin can access all users");
     }
 
     const queryBuilder = new QueryBuilder(User.find(), query);

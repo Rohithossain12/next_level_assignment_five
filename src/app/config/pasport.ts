@@ -38,7 +38,7 @@ passport.use(
 
 
             if (isGoogleAuthenticated) {
-                return done(null, false, { message: "you have authenticated through Google. so if you want to login with credentials , then at first login with google and set a password for your gmail and then you can login with email and password " })
+                return done(null, false, { message: "Login with Google first, set a password, then use email & password to login." })
             }
 
 

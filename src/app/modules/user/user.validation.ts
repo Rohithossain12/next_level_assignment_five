@@ -27,7 +27,7 @@ export const updateUserZodSchema = z.object({
         .regex(/^(?:\+?88)?01[3-9]\d{8}$/, { message: "Please provide a valid Bangladeshi phone number." })
         .optional(),
     isDeleted: z.boolean({ error: "isDeleted must be true of false" }).optional(),
-    isActive: z.enum(Object.values(IsActive) as [string]).optional,
+    isActive: z.enum(Object.values(IsActive) as [string]).optional(),
     isVerified: z.boolean({ error: " isVerified must be true of false" }).optional(),
     role: z.enum(Object.values(Role) as [string]).optional(),
     address: z.string({ error: "Address must be string" })
