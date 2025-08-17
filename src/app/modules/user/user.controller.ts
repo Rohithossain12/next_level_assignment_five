@@ -6,7 +6,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
 import { catchAsync } from "../../utils/catchAsync";
 
-// Create User
+
 const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user as JwtPayload | undefined;
     const result = await UserServices.createUser(req.body, decodedToken);
@@ -19,7 +19,7 @@ const createUser = catchAsync(async (req: Request, res: Response, next: NextFunc
     });
 });
 
-// Update User
+
 const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
     const payload = req.body;
@@ -35,7 +35,7 @@ const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunc
     });
 });
 
-// Get All Users (Admin only)
+
 const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const query = req.query as Record<string, string>;
     const decodedToken = req.user as JwtPayload | undefined;
@@ -51,7 +51,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFun
     });
 });
 
-// Get Single User
+
 const getSingleUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const decodedToken = req.user as JwtPayload | undefined;
@@ -66,7 +66,7 @@ const getSingleUser = catchAsync(async (req: Request, res: Response, next: NextF
     });
 });
 
-// Get My Profile
+
 const getMe = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user as JwtPayload;
 

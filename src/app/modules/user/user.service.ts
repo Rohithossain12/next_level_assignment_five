@@ -8,11 +8,11 @@ import { User } from "./user.model";
 import { userSearchableFields } from "./user.constant";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 
-// Create User
+
 const createUser = async (payload: Partial<IUser>, decodedToken?: JwtPayload) => {
     const { email, password, role = Role.RECEIVER, ...rest } = payload;
 
-    // Only ADMIN can create ADMIN or SENDER
+   
     if (decodedToken && decodedToken.role !== Role.ADMIN && (role === Role.ADMIN || role === Role.SENDER)) {
         throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to create this user role");
     }
@@ -38,7 +38,7 @@ const createUser = async (payload: Partial<IUser>, decodedToken?: JwtPayload) =>
     return { data: user };
 };
 
-// Get all users with pagination, search, filter
+
 const getAllUsers = async (query: Record<string, string>, decodedToken?: JwtPayload) => {
     if (![Role.ADMIN, Role.SUPER_ADMIN].includes(decodedToken?.role as Role)) {
         throw new AppError(httpStatus.FORBIDDEN, "Only admin or super admin can access all users");
@@ -61,13 +61,13 @@ const getAllUsers = async (query: Record<string, string>, decodedToken?: JwtPayl
     return { data, meta };
 };
 
-// Get single user
+
 const getSingleUser = async (id: string, decodedToken?: JwtPayload) => {
     const user = await User.findById(id).select("-password");
 
     if (!user) throw new AppError(httpStatus.NOT_FOUND, "User not found");
 
-    // Role-based access
+ 
     if (decodedToken?.role !== Role.ADMIN && decodedToken?.userId !== id) {
         throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to view this user");
     }
@@ -75,12 +75,12 @@ const getSingleUser = async (id: string, decodedToken?: JwtPayload) => {
     return { data: user };
 };
 
-// Update User
+
 const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken?: JwtPayload) => {
     const existingUser = await User.findById(userId);
     if (!existingUser) throw new AppError(httpStatus.NOT_FOUND, "User not found");
 
-    // Role-based authorization
+  
     if (decodedToken) {
         if ((decodedToken.role === Role.RECEIVER || decodedToken.role === Role.SENDER) && userId !== decodedToken.userId) {
             throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to update this user");
@@ -95,14 +95,14 @@ const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken?
     return { data: updatedUser };
 };
 
-// Get my profile
+
 const getMe = async (userId: string) => {
     const user = await User.findById(userId).select("-password");
     if (!user) throw new AppError(httpStatus.NOT_FOUND, "User not found");
     return { data: user };
 };
 
-// Export all as object
+
 export const UserServices = {
     createUser,
     getAllUsers,
