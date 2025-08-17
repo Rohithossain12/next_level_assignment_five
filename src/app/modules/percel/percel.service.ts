@@ -13,6 +13,9 @@ const createParcel = async (user: any, payload: any) => {
     return { data: parcel };
 };
 
+
+
+
 const cancelParcel = async (user: any, parcelId: string) => {
     const parcel = await Parcel.findOne({ _id: parcelId, sender: user.userId });
     if (!parcel) throw new AppError(httpStatus.NOT_FOUND, "Parcel not found");
@@ -25,15 +28,18 @@ const cancelParcel = async (user: any, parcelId: string) => {
     return { data: parcel };
 };
 
+
 const getMyParcels = async (user: any) => {
     const parcels = await Parcel.find({ sender: user.userId });
     return { data: parcels };
 };
 
+
 const getIncomingParcels = async (user: any) => {
     const parcels = await Parcel.find({ receiver: user.userId });
     return { data: parcels };
 };
+
 
 const confirmDelivery = async (user: any, parcelId: string) => {
     const parcel = await Parcel.findOne({ _id: parcelId, receiver: user.userId });
