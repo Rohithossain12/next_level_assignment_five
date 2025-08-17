@@ -6,14 +6,14 @@ const setAuthCookie = (res, tokenInfo) => {
     if (tokenInfo.accessToken) {
         res.cookie("accessToken", tokenInfo.accessToken, {
             httpOnly: true,
-            secure: env_1.envVars.NODE_ENV === "development",
+            secure: env_1.envVars.NODE_ENV === "production",
             sameSite: "none"
         });
     }
     if (tokenInfo.refreshToken) {
         res.cookie("refreshToken", tokenInfo.refreshToken, {
             httpOnly: true,
-            secure: env_1.envVars.NODE_ENV === "development",
+            secure: env_1.envVars.NODE_ENV === "production",
             sameSite: "none"
         });
     }
