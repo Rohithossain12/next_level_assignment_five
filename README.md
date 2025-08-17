@@ -79,3 +79,14 @@ src/
 │   └── parcel/        # Parcel CRUD + status log handling
 ├── utils/             # Helper functions (sendResponse, catchAsync)
 ├── app.ts             # Entry point
+
+---
+
+✅ Validations & Rules
+
+Only sender can create or cancel parcels (before dispatch)
+Receiver confirms delivery
+Admin manages all records and updates status
+Users cannot access parcels they do not own
+Blocked users cannot perform any actions
+Parcel status must follow logical flow: Requested → Approved → Dispatched → In Transit → Delivered
