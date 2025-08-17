@@ -19,6 +19,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json());
+app.set("trust proxy", 1);
 app.use(session({
     secret: envVars.EXPRESS_SESSION_SECRET,
     resave: false,
