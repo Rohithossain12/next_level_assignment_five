@@ -30,7 +30,7 @@ const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunc
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.OK,
-        message: "User updated successfully",
+        message: "User role updated successfully",
         data: result.data
     });
 });

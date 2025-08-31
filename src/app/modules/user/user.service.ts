@@ -12,7 +12,7 @@ import { QueryBuilder } from "../../utils/QueryBuilder";
 const createUser = async (payload: Partial<IUser>, decodedToken?: JwtPayload) => {
     const { email, password, role = Role.RECEIVER, ...rest } = payload;
 
-   
+
     if (decodedToken && decodedToken.role !== Role.ADMIN && (role === Role.ADMIN || role === Role.SENDER)) {
         throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to create this user role");
     }
@@ -67,7 +67,7 @@ const getSingleUser = async (id: string, decodedToken?: JwtPayload) => {
 
     if (!user) throw new AppError(httpStatus.NOT_FOUND, "User not found");
 
- 
+
     if (decodedToken?.role !== Role.ADMIN && decodedToken?.userId !== id) {
         throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to view this user");
     }
@@ -76,24 +76,59 @@ const getSingleUser = async (id: string, decodedToken?: JwtPayload) => {
 };
 
 
-const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken?: JwtPayload) => {
+const updateUser = async (
+    userId: string,
+    payload: Partial<IUser>,
+    decodedToken?: JwtPayload
+) => {
     const existingUser = await User.findById(userId);
     if (!existingUser) throw new AppError(httpStatus.NOT_FOUND, "User not found");
 
-  
     if (decodedToken) {
-        if ((decodedToken.role === Role.RECEIVER || decodedToken.role === Role.SENDER) && userId !== decodedToken.userId) {
+
+        if (
+            (decodedToken.role === Role.RECEIVER || decodedToken.role === Role.SENDER) &&
+            userId !== decodedToken.userId
+        ) {
             throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to update this user");
         }
 
-        if ((payload.role && decodedToken.role !== Role.ADMIN) || (payload.isActive && decodedToken.role !== Role.ADMIN)) {
+
+        if (
+            (payload.role && ![Role.ADMIN, Role.SUPER_ADMIN].includes(decodedToken.role)) ||
+            (payload.isActive && ![Role.ADMIN, Role.SUPER_ADMIN].includes(decodedToken.role))
+        ) {
             throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to change this field");
+        }
+
+        if (decodedToken.userId === userId && decodedToken.role === Role.SUPER_ADMIN && payload.role) {
+            throw new AppError(
+                httpStatus.FORBIDDEN,
+                "SUPER_ADMIN cannot change their own role"
+            );
+        }
+
+
+        if (
+            decodedToken.userId === userId &&
+            decodedToken.role === Role.ADMIN &&
+            payload.role === Role.SUPER_ADMIN
+        ) {
+            throw new AppError(
+                httpStatus.FORBIDDEN,
+                "ADMIN cannot change their role to SUPER_ADMIN"
+            );
         }
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, payload, { new: true, runValidators: true });
+    const updatedUser = await User.findByIdAndUpdate(userId, payload, {
+        new: true,
+        runValidators: true,
+    });
+
     return { data: updatedUser };
 };
+
 
 
 const getMe = async (userId: string) => {
