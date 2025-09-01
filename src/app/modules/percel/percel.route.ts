@@ -8,7 +8,6 @@ import { createParcelZodSchema, updateParcelZodSchema } from "./percel.validatio
 
 const router = express.Router();
 
-// Sender routes
 router.post(
   "/",
   checkAuth(Role.SENDER),

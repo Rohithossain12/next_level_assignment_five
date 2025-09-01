@@ -40,7 +40,7 @@ const createUser = async (payload: Partial<IUser>, decodedToken?: JwtPayload) =>
 
 
 const getAllUsers = async (query: Record<string, string>, decodedToken?: JwtPayload) => {
-    if (![Role.ADMIN, Role.SUPER_ADMIN].includes(decodedToken?.role as Role)) {
+    if (![Role.ADMIN, Role.SUPER_ADMIN, Role.SENDER].includes(decodedToken?.role as Role)) {
         throw new AppError(httpStatus.FORBIDDEN, "Only admin or super admin can access all users");
     }
 
