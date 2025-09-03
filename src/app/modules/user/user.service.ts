@@ -138,10 +138,31 @@ const getMe = async (userId: string) => {
 };
 
 
+const updateMyProfile = async (userId: string, payload: Partial<IUser>) => {
+    const existingUser = await User.findById(userId);
+    if (!existingUser) throw new AppError(httpStatus.NOT_FOUND, "User not found");
+
+
+    if (payload.role || payload.isActive) {
+        throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to change this field");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, payload, {
+        new: true,
+        runValidators: true,
+    }).select("-password");
+
+    return { data: updatedUser };
+};
+
+
+
+
 export const UserServices = {
     createUser,
     getAllUsers,
     getSingleUser,
     updateUser,
-    getMe
+    getMe,
+    updateMyProfile
 };

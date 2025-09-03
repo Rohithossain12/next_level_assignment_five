@@ -24,7 +24,7 @@ export const createUserZodSchema = z.object({
 export const updateUserZodSchema = z.object({
     name: z.string({ error: "Name Must be String" }).min(5, { message: "Name to short minimum 5 character long" }).max(30, { message: "Name to long" }).optional(),
     phone: z.string({ error: "Phone Number must be String" })
-        .regex(/^(?:\+?88)?01[3-9]\d{8}$/, { message: "Please provide a valid Bangladeshi phone number." })
+        .regex(/^(?:\+?88)?01[3-9]\d{8}$/, { message: "Please provide a valid Bangladeshi phone number." }) // Change \d{9} to \d{8}
         .optional(),
     isDeleted: z.boolean({ error: "isDeleted must be true of false" }).optional(),
     isActive: z.enum(Object.values(IsActive) as [string]).optional(),
@@ -33,5 +33,4 @@ export const updateUserZodSchema = z.object({
     address: z.string({ error: "Address must be string" })
         .max(200, { message: "Address can not exceed 200 characters" })
         .optional()
-
 });

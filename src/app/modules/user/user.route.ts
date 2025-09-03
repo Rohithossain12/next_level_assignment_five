@@ -8,8 +8,14 @@ import { checkAuth } from "../../middlewares/check.auth";
 const router = express.Router();
 
 router.post("/register", validateRequest(createUserZodSchema), UserController.createUser);
-router.get("/all-users", checkAuth(Role.ADMIN, Role.SUPER_ADMIN,Role.SENDER), UserController.getAllUsers);
+router.get("/all-users", checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.SENDER), UserController.getAllUsers);
 router.get("/me", checkAuth(...Object.values(Role)), UserController.getMe);
+router.patch(
+    "/me",
+    checkAuth(...Object.values(Role)),
+    validateRequest(updateUserZodSchema),
+    UserController.updateMyProfile
+);
 router.get("/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserController.getSingleUser);
 router.patch("/:id", validateRequest(updateUserZodSchema), checkAuth(...Object.values(Role)), UserController.updateUser);
 
