@@ -1,4 +1,4 @@
-
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -20,29 +20,24 @@ const user_model_1 = require("../modules/user/user.model");
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const user_interface_1 = require("../modules/user/user.interface");
 const checkAuth = (...authRoles) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const accessToken = req.headers.authorization;
+        const accessToken = ((_a = req.cookies) === null || _a === void 0 ? void 0 : _a.accessToken) || req.headers.authorization;
         if (!accessToken) {
             throw new AppError_1.default(403, "No token received");
         }
         const verifiedToken = (0, jwt_1.verifyToken)(accessToken, env_1.envVars.JWT_ACCESS_SECRET);
-        const isUserExist = yield user_model_1.User.findOne({ email: verifiedToken.email });
-        if (!isUserExist) {
+        const user = yield user_model_1.User.findOne({ email: verifiedToken.email });
+        if (!user)
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User does not exist");
-        }
-        ;
-        if (!isUserExist.isVerified) {
+        if (!user.isVerified)
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User is not verified");
+        if (user.isActive === user_interface_1.IsActive.BLOCKED || user.isActive === user_interface_1.IsActive.INACTIVE) {
+            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, `User is ${user.isActive}`);
         }
-        if (isUserExist.isActive === user_interface_1.IsActive.BLOCKED || isUserExist.isActive === user_interface_1.IsActive.INACTIVE) {
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, `User is ${isUserExist.isActive}`);
-        }
-        ;
-        if (isUserExist.isDeleted) {
+        if (user.isDeleted)
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User is deleted");
-        }
-        ;
-        if (!authRoles.includes(verifiedToken.role)) {
+        if (authRoles.length && !authRoles.includes(verifiedToken.role)) {
             throw new AppError_1.default(403, "You are not permitted to view this route");
         }
         req.user = verifiedToken;

@@ -77,14 +77,27 @@ const updateUser = (userId, payload, decodedToken) => __awaiter(void 0, void 0, 
     if (!existingUser)
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User not found");
     if (decodedToken) {
-        if ((decodedToken.role === user_interface_1.Role.RECEIVER || decodedToken.role === user_interface_1.Role.SENDER) && userId !== decodedToken.userId) {
+        if ((decodedToken.role === user_interface_1.Role.RECEIVER || decodedToken.role === user_interface_1.Role.SENDER) &&
+            userId !== decodedToken.userId) {
             throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "You are not authorized to update this user");
         }
-        if ((payload.role && decodedToken.role !== user_interface_1.Role.ADMIN) || (payload.isActive && decodedToken.role !== user_interface_1.Role.ADMIN)) {
+        if ((payload.role && ![user_interface_1.Role.ADMIN, user_interface_1.Role.SUPER_ADMIN].includes(decodedToken.role)) ||
+            (payload.isActive && ![user_interface_1.Role.ADMIN, user_interface_1.Role.SUPER_ADMIN].includes(decodedToken.role))) {
             throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "You are not authorized to change this field");
         }
+        if (decodedToken.userId === userId && decodedToken.role === user_interface_1.Role.SUPER_ADMIN && payload.role) {
+            throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "SUPER_ADMIN cannot change their own role");
+        }
+        if (decodedToken.userId === userId &&
+            decodedToken.role === user_interface_1.Role.ADMIN &&
+            payload.role === user_interface_1.Role.SUPER_ADMIN) {
+            throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "ADMIN cannot change their role to SUPER_ADMIN");
+        }
     }
-    const updatedUser = yield user_model_1.User.findByIdAndUpdate(userId, payload, { new: true, runValidators: true });
+    const updatedUser = yield user_model_1.User.findByIdAndUpdate(userId, payload, {
+        new: true,
+        runValidators: true,
+    });
     return { data: updatedUser };
 });
 const getMe = (userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -93,10 +106,24 @@ const getMe = (userId) => __awaiter(void 0, void 0, void 0, function* () {
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User not found");
     return { data: user };
 });
+const updateMyProfile = (userId, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingUser = yield user_model_1.User.findById(userId);
+    if (!existingUser)
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User not found");
+    if (payload.role || payload.isActive) {
+        throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "You are not authorized to change this field");
+    }
+    const updatedUser = yield user_model_1.User.findByIdAndUpdate(userId, payload, {
+        new: true,
+        runValidators: true,
+    }).select("-password");
+    return { data: updatedUser };
+});
 exports.UserServices = {
     createUser,
     getAllUsers,
     getSingleUser,
     updateUser,
-    getMe
+    getMe,
+    updateMyProfile
 };

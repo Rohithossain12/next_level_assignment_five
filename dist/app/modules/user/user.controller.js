@@ -35,7 +35,7 @@ const updateUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,
-        message: "User updated successfully",
+        message: "User role updated successfully",
         data: result.data
     });
 }));
@@ -72,10 +72,23 @@ const getMe = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0,
         data: result.data
     });
 }));
+const updateMyProfile = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const decodedToken = req.user;
+    const userId = decodedToken.userId;
+    const payload = req.body;
+    const result = yield user_service_1.UserServices.updateMyProfile(userId, payload);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.OK,
+        message: "Your profile updated successfully",
+        data: result.data
+    });
+}));
 exports.UserController = {
     createUser,
     updateUser,
     getAllUsers,
     getSingleUser,
-    getMe
+    getMe,
+    updateMyProfile
 };

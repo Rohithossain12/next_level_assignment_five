@@ -11,7 +11,6 @@ const percel_controller_1 = require("./percel.controller");
 const validateRequest_1 = require("../../middlewares/validateRequest");
 const percel_validation_1 = require("./percel.validation");
 const router = express_1.default.Router();
-// Sender routes
 router.post("/", (0, check_auth_1.checkAuth)(user_interface_1.Role.SENDER), (0, validateRequest_1.validateRequest)(percel_validation_1.createParcelZodSchema), percel_controller_1.ParcelController.createParcel);
 router.patch("/cancel/:id", (0, check_auth_1.checkAuth)(user_interface_1.Role.SENDER), percel_controller_1.ParcelController.cancelParcel);
 router.get("/me", (0, check_auth_1.checkAuth)(user_interface_1.Role.SENDER), percel_controller_1.ParcelController.getMyParcels);

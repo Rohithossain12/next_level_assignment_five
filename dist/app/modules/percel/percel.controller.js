@@ -62,13 +62,16 @@ const confirmDelivery = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(voi
         data: result.data
     });
 }));
-const getAllParcels = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield percel_service_1.ParcelService.getAllParcels(req.query);
+const getAllParcels = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req.query;
+    const decodedToken = req.user;
+    const result = yield percel_service_1.ParcelService.getAllParcels(query, decodedToken);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.OK,
         message: "All parcels retrieved successfully",
-        data: result.data
+        data: result.data,
+        meta: result.meta
     });
 }));
 const updateStatus = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
