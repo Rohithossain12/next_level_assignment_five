@@ -2,6 +2,10 @@ import httpStatus from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
 import { ParcelStatus } from "./percel.interface";
 import { Parcel } from "./percel.model";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { Role } from "../user/user.interface";
+import { JwtPayload } from "jsonwebtoken";
+import { parcelSearchableFields } from "./percel.constant";
 
 const userFields = "name email phone";
 
@@ -79,13 +83,33 @@ const confirmDelivery = async (user: any, parcelId: string) => {
 };
 
 
+const getAllParcels = async (
+  query: Record<string, string>,
+  decodedToken?: JwtPayload
+) => {
 
-const getAllParcels = async (query: any) => {
-  const parcels = await Parcel.find()
+  if (![Role.ADMIN, Role.SUPER_ADMIN].includes(decodedToken?.role as Role)) {
+    throw new AppError(httpStatus.FORBIDDEN, "Only admin or super admin can access all parcels");
+  }
+
+  const baseQuery = Parcel.find()
     .populate("sender", userFields)
     .populate("receiver", userFields);
 
-  return { data: parcels };
+  const queryBuilder = new QueryBuilder(baseQuery, query);
+  const parcelsData = queryBuilder
+    .filter()
+    .search(parcelSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    parcelsData.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return { data, meta };
 };
 
 

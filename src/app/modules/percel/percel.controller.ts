@@ -3,6 +3,7 @@ import httpStatus from "http-status-codes";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { ParcelService } from "./percel.service";
+import { JwtPayload } from "jsonwebtoken";
 
 
 const createParcel = catchAsync(async (req: Request, res: Response) => {
@@ -55,13 +56,18 @@ const confirmDelivery = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const getAllParcels = catchAsync(async (req: Request, res: Response) => {
-    const result = await ParcelService.getAllParcels(req.query);
+const getAllParcels = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const query = req.query as Record<string, string>;
+    const decodedToken = req.user as JwtPayload | undefined;
+
+    const result = await ParcelService.getAllParcels(query, decodedToken);
+
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.OK,
         message: "All parcels retrieved successfully",
-        data: result.data
+        data: result.data,
+        meta: result.meta
     });
 });
 
